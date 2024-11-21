@@ -23,15 +23,27 @@ class SytadinData:
 
     def update(self):
         """Get the latest data from the Sytadin."""
+        translation_dict = {
+            'Faible': 'Low',
+            'Habituel': 'Normal',
+            'Inhabituel': 'Unusual',
+            'Exceptionnel': 'Exceptional',
+            'En Hausse': 'Increasing',
+            'En Baisse': 'Decreasing',
+            'Stable': 'Stable'
+        }
+
         try:
             raw_html = requests.get(self._resource, timeout=10).text
             data = BeautifulSoup(raw_html, "html.parser")
 
             values = data.select(".barometre_niveau")
-            self.traffic_level = values[0].select("img")[0].get('alt')
+            traffic_level_fr = values[0].select("img")[0].get('alt')
+            self.traffic_level = translation_dict.get(traffic_level_fr, traffic_level_fr)
 
             values = data.select(".barometre_tendance")
-            self.traffic_tendency = values[0].select("img")[0].get('alt')
+            traffic_tendency_fr = values[0].select("img")[0].get('alt')
+            self.traffic_tendency = translation_dict.get(traffic_tendency_fr, traffic_tendency_fr)
 
             values = data.select(".barometre_valeur")
             parse_traffic_value = re.search(REGEX, values[0].text)
