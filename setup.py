@@ -6,6 +6,8 @@ setup(
     packages=find_packages(where='.'),
     package_dir={'': '.'},
     install_requires=[
+        'dbus-python',
+        'beautifulsoup4',
         'requests',
     ],
     entry_points={
