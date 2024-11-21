@@ -28,8 +28,8 @@ class SytadinData:
             'Habituel': 'Normal',
             'Inhabituel': 'Unusual',
             'Exceptionnel': 'Exceptional',
-            'En Hausse': 'Increasing',
-            'En Baisse': 'Decreasing',
+            'En hausse': 'Increasing',
+            'En baisse': 'Decreasing',
             'Stable': 'Stable'
         }
 
