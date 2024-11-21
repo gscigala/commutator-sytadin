@@ -5,15 +5,15 @@ from gi.repository import GLib
 from .sytadin_data import SytadinData, URL
 
 class SytadinDBusService(dbus.service.Object):
-    def __init__(self, bus_name, object_path='/com/example/Sytadin'):
+    def __init__(self, bus_name, object_path='/com/commutator/Sytadin'):
         dbus.service.Object.__init__(self, bus_name, object_path)
         self.data = SytadinData(URL)
 
-    @dbus.service.method('com.example.Sytadin', in_signature='', out_signature='')
+    @dbus.service.method('com.commutator.Sytadin', in_signature='', out_signature='')
     def update(self):
         self.data.update()
         self.PropertiesChanged(
-            'com.example.Sytadin',
+            'com.commutator.Sytadin',
             {
                 'traffic_level': self.data.traffic_level,
                 'traffic_tendency': self.data.traffic_tendency,
