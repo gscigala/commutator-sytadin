@@ -1,0 +1,10 @@
+[Unit]
+Description=Sytadin Data Service
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/commutator-sytadin
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
