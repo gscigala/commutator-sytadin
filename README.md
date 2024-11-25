@@ -49,7 +49,7 @@ The project includes a systemd service file to manage the service using systemd.
 
 ## DBus Configuration
 
-The project includes a DBus configuration file to set the necessary permissions for the DBus service. The configuration file is located at dbus/com.Commutator.Sytadin.conf.
+The project includes a DBus configuration file to set the necessary permissions for the DBus service. The configuration file is located at dbus/com.commutator.Sytadin.conf.
 
 ## Testing
 
