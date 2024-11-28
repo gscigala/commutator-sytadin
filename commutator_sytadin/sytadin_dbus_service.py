@@ -28,7 +28,13 @@ class SytadinDBusService(dbus.service.Object):
 
     @dbus.service.method('org.freedesktop.DBus.Properties', in_signature='ss', out_signature='v')
     def Get(self, interface_name, property_name):
-        return getattr(self.data, property_name)
+        try:
+            return getattr(self.data, property_name)
+        except AttributeError:
+            raise dbus.exceptions.DBusException(
+                f"Property '{property_name}' does not exist on interface '{interface_name}'",
+                name='org.freedesktop.DBus.Error.UnknownProperty'
+            )
 
     @dbus.service.method('org.freedesktop.DBus.Properties', in_signature='s', out_signature='a{sv}')
     def GetAll(self, interface_name):
