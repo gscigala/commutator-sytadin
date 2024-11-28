@@ -16,10 +16,9 @@ class SytadinData:
     def __init__(self, resource):
         """Initialize the data object."""
         self._resource = resource
-        self.data = None
-        self.traffic_level = None
-        self.traffic_tendency = None
-        self.traffic_value = None
+        self.traffic_level = ''
+        self.traffic_tendency = ''
+        self.traffic_value = ''
 
     def update(self):
         """Get the latest data from the Sytadin."""
@@ -52,4 +51,3 @@ class SytadinData:
 
         except requests.exceptions.ConnectionError:
             _LOGGER.error("Connection error")
-            self.data = None
