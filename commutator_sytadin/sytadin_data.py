@@ -36,18 +36,23 @@ class SytadinData:
             raw_html = requests.get(self._resource, timeout=10).text
             data = BeautifulSoup(raw_html, "html.parser")
 
-            values = data.select(".barometre_niveau")
-            traffic_level_fr = values[0].select("img")[0].get('alt')
-            self.traffic_level = translation_dict.get(traffic_level_fr, traffic_level_fr)
+        except Exception as e:
+            _LOGGER.error("Connection error: {}".format(e))
+            self.data = None
+            return
 
-            values = data.select(".barometre_tendance")
-            traffic_tendency_fr = values[0].select("img")[0].get('alt')
-            self.traffic_tendency = translation_dict.get(traffic_tendency_fr, traffic_tendency_fr)
+        values = data.select(".barometre_niveau")
+        traffic_level_fr = values[0].select("img")[0].get('alt')
+        self.traffic_level = translation_dict.get(traffic_level_fr, traffic_level_fr)
+        _LOGGER.info("traffic_level = {}".format(self.traffic_level))
 
-            values = data.select(".barometre_valeur")
-            parse_traffic_value = re.search(REGEX, values[0].text)
-            if parse_traffic_value:
-                self.traffic_value = parse_traffic_value.group()
+        values = data.select(".barometre_tendance")
+        traffic_tendency_fr = values[0].select("img")[0].get('alt')
+        self.traffic_tendency = translation_dict.get(traffic_tendency_fr, traffic_tendency_fr)
+        _LOGGER.info("traffic_tendency = {}".format(self.traffic_tendency))
 
-        except requests.exceptions.ConnectionError:
-            _LOGGER.error("Connection error")
+        values = data.select(".barometre_valeur")
+        parse_traffic_value = re.search(REGEX, values[0].text)
+        if parse_traffic_value:
+            self.traffic_value = parse_traffic_value.group()
+            _LOGGER.info("traffic_value = {}".format(self.traffic_value))
