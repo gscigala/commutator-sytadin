@@ -15,7 +15,7 @@ class SytadinData:
 
     def __init__(self, resource):
         """Initialize the data object."""
-        self._resource = resource
+        self.resource = resource
         self.traffic_level = ''
         self.traffic_tendency = ''
         self.traffic_value = ''
@@ -33,13 +33,13 @@ class SytadinData:
         }
 
         try:
-            raw_html = requests.get(self._resource, timeout=10).text
+            raw_html = requests.get(self.resource, timeout=10).text
             data = BeautifulSoup(raw_html, "html.parser")
 
         except Exception as e:
             _LOGGER.error("Connection error: {}".format(e))
             self.data = None
-            return
+            raise ConnectionError("Failed to connect to the resource")
 
         values = data.select(".barometre_niveau")
         traffic_level_fr = values[0].select("img")[0].get('alt')
