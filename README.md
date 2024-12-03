@@ -15,12 +15,12 @@ To start the program, run:
 You can also use the --session flag to use the DBus session bus instead of the system bus:
 
 	commutator-sytadin --session
+	
+Additionally, you can specify the update interval in seconds using the --update-interval flag. The default interval is 300 seconds (5 minutes):
+
+	commutator-sytadin --update-interval 600
 
 ## DBus Interface
-
-### Methods
-
-    update(): Fetches the latest traffic information from Sytadin.
 
 ### Properties
 

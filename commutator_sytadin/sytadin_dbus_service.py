@@ -5,26 +5,16 @@ from gi.repository import GLib
 from .sytadin_data import SytadinData, URL
 
 class SytadinDBusService(dbus.service.Object):
-    def __init__(self, bus_name, object_path='/com/commutator/Sytadin'):
+    def __init__(self, bus_name, update_interval, object_path='/com/commutator/Sytadin'):
         dbus.service.Object.__init__(self, bus_name, object_path)
-        self.data = SytadinData(URL)
-
-    @dbus.service.method('com.commutator.Sytadin', in_signature='', out_signature='')
-    def update(self):
-        self.data.update()
-        self.PropertiesChanged(
-            'com.commutator.Sytadin',
-            {
-                'traffic_level': self.data.traffic_level,
-                'traffic_tendency': self.data.traffic_tendency,
-                'traffic_value': self.data.traffic_value
-            },
-            []
-        )
+        self.data = SytadinData(URL, self.properties_changed, update_interval)
 
     @dbus.service.signal('org.freedesktop.DBus.Properties', signature='sa{sv}as')
     def PropertiesChanged(self, interface_name, changed_properties, invalidated_properties):
         pass
+
+    def properties_changed(self, changed_properties):
+        self.PropertiesChanged('com.commutator.Sytadin', changed_properties, [])
 
     @dbus.service.method('org.freedesktop.DBus.Properties', in_signature='ss', out_signature='v')
     def Get(self, interface_name, property_name):
@@ -43,3 +33,6 @@ class SytadinDBusService(dbus.service.Object):
             'traffic_tendency': self.data.traffic_tendency,
             'traffic_value': self.data.traffic_value
         }
+
+    def stop_auto_update(self):
+        self.data.stop_auto_update()

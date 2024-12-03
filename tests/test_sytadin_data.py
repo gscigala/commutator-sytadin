@@ -17,14 +17,26 @@ class TestSytadinData(unittest.TestCase):
         '''
         mock_get.return_value = mock_response
 
-        # Create an instance of SytadinData
-        sytadin_data = SytadinData('http://example.com')
+        # Mock the properties_changed_callback
+        properties_changed_callback = MagicMock()
+
+        # Create an instance of SytadinData with the mock callback
+        sytadin_data = SytadinData('http://example.com', properties_changed_callback, 300)
         sytadin_data.update()
 
         # Check the updated values
         self.assertEqual(sytadin_data.traffic_level, 'Level 1')
         self.assertEqual(sytadin_data.traffic_tendency, 'Tendency 1')
         self.assertEqual(sytadin_data.traffic_value, '1.23')
+
+        # Check that the properties_changed_callback was called with the updated properties
+        properties_changed_callback.assert_called_once_with({
+            'traffic_level': 'Level 1',
+            'traffic_tendency': 'Tendency 1',
+            'traffic_value': '1.23'
+        })
+
+        sytadin_data.stop_auto_update()
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,6 +2,7 @@ import logging
 import requests
 import re
 from bs4 import BeautifulSoup
+import threading
 
 logging.basicConfig(level=logging.INFO)
 _LOGGER = logging.getLogger(__name__)
@@ -13,12 +14,28 @@ REGEX = r'(\d*\.\d+|\d+)'
 class SytadinData:
     """The class for handling the data retrieval."""
 
-    def __init__(self, resource):
+    def __init__(self, resource, properties_changed_callback, update_interval):
         """Initialize the data object."""
         self.resource = resource
         self.traffic_level = ''
         self.traffic_tendency = ''
         self.traffic_value = ''
+        self.timer = None
+        self.properties_changed_callback = properties_changed_callback
+        self.update_interval = update_interval
+        self.auto_update()
+
+    def auto_update(self):
+        """Update the data and restart the timer."""
+        self.update()
+        self.timer = threading.Timer(self.update_interval, self.auto_update)
+        self.timer.start()
+
+    def stop_auto_update(self):
+        """Stop the auto-update timer."""
+        if self.timer:
+            self.timer.cancel()
+            self.timer = None
 
     def update(self):
         """Get the latest data from the Sytadin."""
@@ -43,16 +60,35 @@ class SytadinData:
 
         values = data.select(".barometre_niveau")
         traffic_level_fr = values[0].select("img")[0].get('alt')
-        self.traffic_level = translation_dict.get(traffic_level_fr, traffic_level_fr)
-        _LOGGER.info("traffic_level = {}".format(self.traffic_level))
+        new_traffic_level = translation_dict.get(traffic_level_fr, traffic_level_fr)
+        _LOGGER.info("traffic_level = {}".format(new_traffic_level))
 
         values = data.select(".barometre_tendance")
         traffic_tendency_fr = values[0].select("img")[0].get('alt')
-        self.traffic_tendency = translation_dict.get(traffic_tendency_fr, traffic_tendency_fr)
-        _LOGGER.info("traffic_tendency = {}".format(self.traffic_tendency))
+        new_traffic_tendency = translation_dict.get(traffic_tendency_fr, traffic_tendency_fr)
+        _LOGGER.info("traffic_tendency = {}".format(new_traffic_tendency))
 
         values = data.select(".barometre_valeur")
         parse_traffic_value = re.search(REGEX, values[0].text)
-        if parse_traffic_value:
-            self.traffic_value = parse_traffic_value.group()
-            _LOGGER.info("traffic_value = {}".format(self.traffic_value))
+        new_traffic_value = parse_traffic_value.group() if parse_traffic_value else ''
+        _LOGGER.info("traffic_value = {}".format(new_traffic_value))
+
+        changed_properties = {}
+
+        if new_traffic_level != self.traffic_level:
+            _LOGGER.info("new traffic_level!")
+            self.traffic_level = new_traffic_level
+            changed_properties['traffic_level'] = new_traffic_level
+
+        if new_traffic_tendency != self.traffic_tendency:
+            _LOGGER.info("new traffic_tendency!")
+            self.traffic_tendency = new_traffic_tendency
+            changed_properties['traffic_tendency'] = new_traffic_tendency
+
+        if new_traffic_value != self.traffic_value:
+            _LOGGER.info("new traffic_value!")
+            self.traffic_value = new_traffic_value
+            changed_properties['traffic_value'] = new_traffic_value
+
+        if changed_properties:
+            self.properties_changed_callback(changed_properties)
