@@ -16,7 +16,7 @@ You can also use the --session flag to use the DBus session bus instead of the s
 
 	commutator-sytadin --session
 	
-Additionally, you can specify the update interval in seconds using the --update-interval flag. The default interval is 300 seconds (5 minutes):
+Additionally, you can specify the update interval in seconds using the --update-interval flag. The default interval is 480 seconds (8 minutes):
 
 	commutator-sytadin --update-interval 600
 

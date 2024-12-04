@@ -7,7 +7,7 @@ from .sytadin_data import SytadinData, URL
 class SytadinDBusService(dbus.service.Object):
     def __init__(self, bus_name, update_interval, object_path='/com/commutator/Sytadin'):
         dbus.service.Object.__init__(self, bus_name, object_path)
-        self.data = SytadinData(URL, self.properties_changed, update_interval)
+        self.data = SytadinData(self.properties_changed, URL, update_interval)
 
     @dbus.service.signal('org.freedesktop.DBus.Properties', signature='sa{sv}as')
     def PropertiesChanged(self, interface_name, changed_properties, invalidated_properties):

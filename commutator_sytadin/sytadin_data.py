@@ -14,7 +14,7 @@ REGEX = r'(\d*\.\d+|\d+)'
 class SytadinData:
     """The class for handling the data retrieval."""
 
-    def __init__(self, resource, properties_changed_callback, update_interval):
+    def __init__(self, properties_changed_callback, resource, update_interval):
         """Initialize the data object."""
         self.resource = resource
         self.traffic_level = ''

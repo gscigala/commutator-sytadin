@@ -21,7 +21,7 @@ class TestSytadinData(unittest.TestCase):
         properties_changed_callback = MagicMock()
 
         # Create an instance of SytadinData with the mock callback
-        sytadin_data = SytadinData('http://example.com', properties_changed_callback, 300)
+        sytadin_data = SytadinData(properties_changed_callback, 'http://example.com', 300)
         sytadin_data.update()
 
         # Check the updated values
