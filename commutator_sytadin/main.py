@@ -14,13 +14,13 @@ def signal_handler(signum, frame):
 def main():
     parser = argparse.ArgumentParser(description='Sytadin Data Service')
     parser.add_argument('--session', action='store_true', help='Use DBus session bus instead of system bus')
-    parser.add_argument('--update-interval', type=int, default=300, help='Update interval in seconds (default: 300)')
+    parser.add_argument('--update-interval', type=int, default=480, help='Update interval in seconds (default: 480)')
     args = parser.parse_args()
 
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     bus_name = dbus.service.BusName('com.commutator.Sytadin', dbus.SystemBus() if not args.session else dbus.SessionBus())
     global sytadin_service
-    sytadin_service = SytadinDBusService(bus_name, args.update_interval)
+    sytadin_service = SytadinDBusService(bus_name, update_interval=args.update_interval)
 
     global loop
     loop = GLib.MainLoop()
