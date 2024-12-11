@@ -27,9 +27,13 @@ class SytadinData:
 
     def auto_update(self):
         """Update the data and restart the timer."""
-        self.update()
-        self.timer = threading.Timer(self.update_interval, self.auto_update)
-        self.timer.start()
+        try:
+            self.update()
+        except Exception as e:
+            _LOGGER.error("Error in auto_update: {}".format(e))
+        finally:
+            self.timer = threading.Timer(self.update_interval, self.auto_update)
+            self.timer.start()
 
     def stop_auto_update(self):
         """Stop the auto-update timer."""
@@ -58,20 +62,24 @@ class SytadinData:
             self.data = None
             raise ConnectionError("Failed to connect to the resource")
 
-        values = data.select(".barometre_niveau")
-        traffic_level_fr = values[0].select("img")[0].get('alt')
-        new_traffic_level = translation_dict.get(traffic_level_fr, traffic_level_fr)
-        _LOGGER.info("traffic_level = {}".format(new_traffic_level))
+        try:
+            values = data.select(".barometre_niveau")
+            traffic_level_fr = values[0].select("img")[0].get('alt')
+            new_traffic_level = translation_dict.get(traffic_level_fr, traffic_level_fr)
+            _LOGGER.info("traffic_level = {}".format(new_traffic_level))
 
-        values = data.select(".barometre_tendance")
-        traffic_tendency_fr = values[0].select("img")[0].get('alt')
-        new_traffic_tendency = translation_dict.get(traffic_tendency_fr, traffic_tendency_fr)
-        _LOGGER.info("traffic_tendency = {}".format(new_traffic_tendency))
+            values = data.select(".barometre_tendance")
+            traffic_tendency_fr = values[0].select("img")[0].get('alt')
+            new_traffic_tendency = translation_dict.get(traffic_tendency_fr, traffic_tendency_fr)
+            _LOGGER.info("traffic_tendency = {}".format(new_traffic_tendency))
 
-        values = data.select(".barometre_valeur")
-        parse_traffic_value = re.search(REGEX, values[0].text)
-        new_traffic_value = parse_traffic_value.group() if parse_traffic_value else ''
-        _LOGGER.info("traffic_value = {}".format(new_traffic_value))
+            values = data.select(".barometre_valeur")
+            parse_traffic_value = re.search(REGEX, values[0].text)
+            new_traffic_value = parse_traffic_value.group() if parse_traffic_value else ''
+            _LOGGER.info("traffic_value = {}".format(new_traffic_value))
+
+        except:
+            raise ConnectionError("Error in data parsing")
 
         changed_properties = {}
 
