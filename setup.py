@@ -9,6 +9,7 @@ setup(
         'dbus-python',
         'beautifulsoup4',
         'requests',
+        'sdnotify'
     ],
     entry_points={
         'console_scripts': [
