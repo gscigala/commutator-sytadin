@@ -3,6 +3,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 import threading
+import sdnotify
 
 logging.basicConfig(level=logging.INFO)
 _LOGGER = logging.getLogger(__name__)
@@ -24,6 +25,7 @@ class SytadinData:
         self.properties_changed_callback = properties_changed_callback
         self.update_interval = update_interval
         self.auto_update()
+        sdnotify.SystemdNotifier().notify("READY=1")
 
     def auto_update(self):
         """Update the data and restart the timer."""

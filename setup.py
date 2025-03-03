@@ -2,13 +2,14 @@ from setuptools import setup, find_packages
 
 setup(
     name='communator-sytadin',
-    version='0.7.0',
+    version='0.8.0',
     packages=find_packages(where='.'),
     package_dir={'': '.'},
     install_requires=[
         'dbus-python',
         'beautifulsoup4',
         'requests',
+        'sdnotify'
     ],
     entry_points={
         'console_scripts': [
