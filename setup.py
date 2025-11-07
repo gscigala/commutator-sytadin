@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='communator-sytadin',
-    version='0.8.0',
+    version='0.9.0',
     packages=find_packages(where='.'),
     package_dir={'': '.'},
     install_requires=[
